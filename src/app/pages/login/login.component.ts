@@ -13,4 +13,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
 
+  public loginGithub(){
+    alert("Chức năng đang được nâng cấp.");
+  }
 }
