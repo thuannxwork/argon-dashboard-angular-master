@@ -27,7 +27,8 @@ import { ComponentsModule } from './components/components.module';
   declarations: [
     AppComponent,
     AdminLayoutComponent,
-    AuthLayoutComponent
+    AuthLayoutComponent,
+    WeatherComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
