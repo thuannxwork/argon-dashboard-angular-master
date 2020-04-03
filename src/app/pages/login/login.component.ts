@@ -1,4 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
+import { Http } from '@angular/http';
+// import 'rxjs/add/operator/toPromise';
+import { Observable } from 'rxjs';
+
 declare var $: any;
 
 @Component({
@@ -7,7 +12,7 @@ declare var $: any;
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  constructor() { }
+  constructor(private cookieService: CookieService, private http: Http) { }
   loginForm: any = undefined;
   ngOnInit() {
   }
@@ -47,17 +52,48 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
 
+  getToken(body: any, options: any) {
+    return this.http.post('http://192.168.130.36:1234/api/sso/auth/login', body, options);
+  }
+
   login() {
     if (this.modelLogin.username === "") {
-      this.showNotification('top','right', 'Tên người dùng không được để trống!')
+      this.showNotification('top', 'right', 'Tên người dùng không được để trống!')
       return;
     }
     if (this.modelLogin.password === "") {
-      this.showNotification('top','right', 'Mật khẩu không được để trống!')
+      this.showNotification('top', 'right', 'Mật khẩu không được để trống!')
       return;
     }
 
-    
+    this.getToken(
+      {
+        "username": "0962266682",
+        "password": "MTIz"
+      },
+      {
+        'headers': {
+          "content-type": ["application/json; charset=utf-8"]
+        }
+      }
+    ).toPromise()
+      .then(res => res.json())
+      .then(resJson => {
+        console.log(resJson);
+
+        if (resJson.responseCode === '000') {
+          console.log(resJson.responseData.accessToken);
+          alert('Đăng nhập thành công')
+        } else {
+          console.log(resJson.responseMessage);
+          alert('Đăng nhập KHÔNG thành công')
+        }
+      })
+      .catch(err => {
+        alert('Đăng nhập KHÔNG thành công vào lúc này!!!')
+      });
+
+
     // this.alertService.clear();
     // if ($("idUsername") == null || $("idUsername").lg_username) {
     //   return;
