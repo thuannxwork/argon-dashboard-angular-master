@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   getToken(body: any, options: any) {
-    return this.http.post('http://192.168.130.36:1234/api/sso/auth/login', body, options);
+    return this.http.post('http://localhost:6789/api/sso/auth/login', body, options);
   }
 
   login() {
@@ -68,8 +68,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.getToken(
       {
-        "username": "0962266682",
-        "password": "MTIz"
+        "username": this.modelLogin.username,
+        "password": btoa(this.modelLogin.password)
       },
       {
         'headers': {
@@ -79,9 +79,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     ).toPromise()
       .then(res => res.json())
       .then(resJson => {
-        console.log(resJson);
+        console.log('then >>> ' + resJson.responseCode);
 
-        if (resJson.responseCode === '000') {
+        if (resJson.responseCode === '200') {
           console.log(resJson.responseData.accessToken);
           alert('Đăng nhập thành công')
         } else {
@@ -90,6 +90,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
       })
       .catch(err => {
+        console.log('catch >>> ' + err);
         alert('Đăng nhập KHÔNG thành công vào lúc này!!!')
       });
 
