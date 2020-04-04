@@ -69,7 +69,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.getToken(
       {
         "username": this.modelLogin.username,
-        "password": btoa(this.modelLogin.password)
+        "password": btoa(this.modelLogin.password)//encode base64
+        //(atob("encodeValue")); --> Decode base64
       },
       {
         'headers': {
