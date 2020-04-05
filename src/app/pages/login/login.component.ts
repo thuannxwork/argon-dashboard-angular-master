@@ -1,18 +1,26 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { Http } from '@angular/http';
 // import 'rxjs/add/operator/toPromise';
 import { Observable } from 'rxjs';
+import { NotificationComponent } from '../../notification/notification.component'
 
 declare var $: any;
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  providers: [NotificationComponent]
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  constructor(private cookieService: CookieService, private http: Http) { }
+  constructor(
+    private cookieService: CookieService,
+    private http: Http,
+    private router: Router,
+    private notificationComponent: NotificationComponent
+  ) { }
   loginForm: any = undefined;
   ngOnInit() {
   }
@@ -23,34 +31,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     password: ''
   }
 
-  showNotification(from, align, message) {
-    const type = ['', 'info', 'success', 'warning', 'danger'];
-
-    const color = Math.floor((Math.random() * 4) + 1);
-
-    $.notify({
-      icon: type[color],
-      message: message
-
-    }, {
-      type: type[color],
-      timer: 3000,
-      placement: {
-        from: from,
-        align: align
-      },
-      template: '<div data-notify="container" class="col-xl-4 col-lg-4 col-11 col-sm-4 col-md-4 alert alert-{0} alert-with-icon" role="alert">' +
-        '<button mat-button  type="button" aria-hidden="true" class="close mat-button" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
-        '<i class="material-icons" data-notify="icon"><img src="../assets/img/icons/common/github.svg"></i> ' +
-        '<span data-notify="title">{1}</span> ' +
-        '<span data-notify="message">{2}</span>' +
-        '<div class="progress" data-notify="progressbar">' +
-        '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-        '</div>' +
-        '<a href="{3}" target="{4}" data-notify="url"></a>' +
-        '</div>'
-    });
-  }
 
   getToken(body: any, options: any) {
     return this.http.post('http://localhost:6789/api/sso/auth/login', body, options);
@@ -58,11 +38,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   login() {
     if (this.modelLogin.username === "") {
-      this.showNotification('top', 'right', 'Tên người dùng không được để trống!')
+      this.notificationComponent.showNotification('top', 'right', 'Tên người dùng không được để trống!')
       return;
     }
     if (this.modelLogin.password === "") {
-      this.showNotification('top', 'right', 'Mật khẩu không được để trống!')
+      this.notificationComponent.showNotification('top', 'right', 'Mật khẩu không được để trống!')
       return;
     }
 
@@ -80,19 +60,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     ).toPromise()
       .then(res => res.json())
       .then(resJson => {
-        console.log('then >>> ' + resJson.responseCode);
-
-        if (resJson.responseCode === '200') {
-          console.log(resJson.responseData.accessToken);
-          alert('Đăng nhập thành công')
+        if (resJson.responseCode === '000') {
+          this.cookieService.set('access_token', resJson.responseData.accessToken, undefined, "/");
+          this.notificationComponent.showNotification('top', 'right', 'Đăng nhập thành công')
+          this.router.navigate(['dashboard']);
         } else {
-          console.log(resJson.responseMessage);
-          alert('Đăng nhập KHÔNG thành công')
+          this.notificationComponent.showNotification('top', 'right', 'Tên đăng nhập hoặc mật khẩu không đúng')
         }
       })
       .catch(err => {
-        console.log('catch >>> ' + err);
-        alert('Đăng nhập KHÔNG thành công vào lúc này!!!')
+        this.notificationComponent.showNotification('top', 'right', 'Đăng nhập không thành công.' + err)
       });
 
 
