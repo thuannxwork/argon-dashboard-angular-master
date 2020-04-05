@@ -11,6 +11,8 @@ import { NotificationComponent } from '../../notification/notification.component
 })
 export class TablesComponent implements OnInit {
 
+  paramList: Param[] = [];
+
   constructor(
     private cookieService: CookieService,
     private http: Http,
@@ -27,6 +29,11 @@ export class TablesComponent implements OnInit {
       .then(res => res.json())
       .then(resJson => {
         if (resJson.responseCode === '000') {
+          this.paramList = resJson.responseData;
+          // for (var i in resJson.responseData){
+          //   console.log('resJson.responseData >> ' + (resJson.responseData.value));
+          //   this.paramList.push([i, resJson.responseData[i]]);
+          // }
           this.notificationComponent.showNotification('top', 'right', resJson.responseCode)
         } else {
           this.notificationComponent.showNotification('top', 'right', resJson.responseCode)
@@ -46,4 +53,14 @@ export class TablesComponent implements OnInit {
     return options;
   }
 
+}
+export interface Param{
+  paramKey: ParamKey,
+  value: string,
+  name: string,
+  status: number
+}
+export interface ParamKey{
+  type: string,
+  code: string
 }
