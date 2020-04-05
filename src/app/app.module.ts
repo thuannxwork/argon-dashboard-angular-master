@@ -13,6 +13,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app.routing';
 import { ComponentsModule } from './components/components.module';
+import { NotificationComponent } from './notification/notification.component';
 
 
 @NgModule({
@@ -29,9 +30,10 @@ import { ComponentsModule } from './components/components.module';
   declarations: [
     AppComponent,
     AdminLayoutComponent,
-    AuthLayoutComponent
+    AuthLayoutComponent,
+    NotificationComponent
   ],
-  providers: [],
+  providers: [NotificationComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

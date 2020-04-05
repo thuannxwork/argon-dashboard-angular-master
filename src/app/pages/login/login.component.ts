@@ -62,6 +62,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       .then(resJson => {
         if (resJson.responseCode === '000') {
           this.cookieService.set('access_token', resJson.responseData.accessToken, undefined, "/");
+          console.log(this.cookieService.get('access_token'));
           this.notificationComponent.showNotification('top', 'right', 'Đăng nhập thành công')
           this.router.navigate(['dashboard']);
         } else {
@@ -71,63 +72,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       .catch(err => {
         this.notificationComponent.showNotification('top', 'right', 'Đăng nhập không thành công.' + err)
       });
-
-
-    // this.alertService.clear();
-    // if ($("idUsername") == null || $("idUsername").lg_username) {
-    //   return;
-    // }
-    // $$$$_login : Uncomment below code
-    // this.cookieService.set('access_token', "1111");
-    // this.loginEvent.emit(<any>{
-    //   username: 'James'
-    // });
-    // this.modal.modal("hide");
-
-    // $$$$_login : comment below code
-    // this.loading = true;
-    // let autho = `Basic ${btoa(environment.jwt_username + ':' + environment.jwt_password)}`;
-    // this.loginService.getToken({}, {
-    //   'headers': {
-    //     "Authorization": autho,
-    //     "Content-Type": "application/x-www-form-urlencoded"
-    //   },
-    //   'params': {
-    //     'grant_type': 'password',
-    //     'scope': 'webclient customerfrontend',
-    //     'username': this.model.lg_username, // fill real username here.
-    //     'password': this.model.lg_password, // fill real passwore here.
-    //     'captchaToken': this.recaptchaToken
-    //   }
-    // }).subscribe((response) => {
-    //   let resp: I.ILoginResponse = <any>response;
-    //   let currTime = new Date();
-    //   let setTime = new Date(currTime.getTime() + resp.expires_in * 1000);
-    //   this.cookieService.set('access_token', resp.access_token, undefined, "/");
-    //   this.cookieService.set('refresh_token', resp.refresh_token), undefined, "/";
-    //   this.cookieService.set('token_type', resp.refresh_token, undefined, "/");
-    //   this.cookieService.set('expires_in', setTime.toString(), undefined, "/");
-    //   this.cookieService.set('scope', resp.refresh_token, undefined, "/");
-    //   this.cookieService.set('login_type', "OTHERS", undefined, "/");
-    //   this.loginEvent.emit(resp);
-    //   this.modal.modal("hide");
-    //   this.dataShareService.setMessage("login");
-    //   this.loginService.redirectToUrl();
-    //   this.headerService.loadUserProfile();
-    //   this.loading = false;
-    //   this.model.lg_password = '';
-    //   this.model.lg_username = '';
-    // },
-    //   (error: any) => {
-    //     this.loading = false;
-    //     if (error.error.error_description == "" || error.error.error_description == null) {
-    //       this.alertService.error("Something went wrong ! please try again.", this.alertLoginId);
-    //     } else {
-    //       this.alertService.error(error.error.error_description, this.alertLoginId);
-    //     }
-    //     this.loadCaptchaToken();
-    //   }
-    // );
   }
 
 }
